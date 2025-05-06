@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Price Predictor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #333;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>House Price Predictor</h1>
+    <form id="predictForm">
+        <label for="beds">Number of Bedrooms:</label>
+        <input type="number" id="beds" name="beds" required>
+
+        <label for="baths">Number of Bathrooms:</label>
+        <input type="number" id="baths" name="baths" required step="0.5">
+
+        <label for="size">Size (in sq ft):</label>
+        <input type="number" id="size" name="size" required>
+
+        <label for="zip_code">ZIP Code:</label>
+        <input type="number" id="zip_code" name="zip_code" required>
+
+        <button type="button" onclick="predictPrice()">Predict Price</button>
+    </form>
+    <div class="result" id="result"></div>
+
+    <script>
+        function predictPrice() {
+            const beds = parseInt(document.getElementById('beds').value);
+            const baths = parseFloat(document.getElementById('baths').value);
+            const size = parseFloat(document.getElementById('size').value);
+            const zip = parseInt(document.getElementById('zip_code').value);
+    
+            fetch('/predict', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ beds, baths, size, zip_code: zip })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerText = 
+                    `Predicted House Price: $${data.price}`;
+    
+                // Reset the form after showing result
+                document.getElementById('predictForm').reset();
+            });
+        }
+    </script>
+    
+</body>
+</html>
